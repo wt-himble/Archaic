@@ -1,0 +1,43 @@
+#include "tokenGenerator.h"
+
+bool isVarDef(char* strPtr, int strIdx) {
+
+	char tempArray[31];
+
+	strncpy(tempArray, strPtr + strIdx + 1, 31 - strIdx);
+	tempArray[30] = '\0';
+
+	if (strcmp(tempArray, "et there be a variable called ") == 0) {
+
+		return true;
+		free(tempArray);
+
+	} else {
+
+		return false;
+		free(tempArray);
+
+	}
+}
+
+void tokenGenerator(char* strPtr) {
+
+	int strIdx = 0;
+
+	while (strPtr[strIdx] != '\0') {
+
+		if (strPtr[strIdx] == 'L') {
+
+			if (isVarDef(strPtr, strIdx)) {
+
+				strIdx += 31;
+
+				printf("%c", strPtr[strIdx]);
+
+			}
+
+		}
+
+		strIdx++;
+	}
+}

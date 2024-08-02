@@ -1,17 +1,52 @@
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "globals.h"
+#include "tokenGenerator.h"
 
 int main() {
 
-	printf("Initializing program...");
+	// ********** Getting data from source file ********** //
 
-	FILE *f;
+	FILE* f;
+	char* srcBuffer = 0;
 
-	f = fopen("test_source.txt", "r");
+	f = fopen("test_source.txt", "rb");
 
-	if (f == NULL) {
+	if (f) {
 
-		printf("\nFile failed to open.");
+		fseek(f, 0, SEEK_END);
+		long fileSize = ftell(f);
+		fseek(f, 0, SEEK_SET);
 
-	}
+		srcBuffer = malloc(fileSize + 1);
+
+		if (srcBuffer) {
+
+			fread(srcBuffer, 1, fileSize, f);
+
+		} else {
+
+			printf("ERROR. FAILED TO ALLOCATE MEMORY.");
+
+		}
+
+		fclose(f);
+
+		srcBuffer[fileSize] = '\0';
+
+	} else {
+
+		printf("ERROR. FAILED TO OPEN FILE.");
+
+	} 
+
+	// ********** Creating tokens ********** //
+
+	Token* tokenArray = 0;
+
+	int numOfTokens = 0;
+	int srcIdx = 0;
+
+	tokenGenerator(srcBuffer);
 }

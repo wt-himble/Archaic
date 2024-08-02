@@ -5,7 +5,7 @@
 
 #include "globals.h"
 
-void tokenGenerator(char* srcPtr);
+void tokenGenerator(char* srcPtr, char* tknArrPtr);
 bool isVarDef(char* strPtr, int strIdx);
 
 

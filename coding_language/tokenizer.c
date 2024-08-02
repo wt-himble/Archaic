@@ -48,5 +48,5 @@ int main() {
 	int numOfTokens = 0;
 	int srcIdx = 0;
 
-	tokenGenerator(srcBuffer);
+	tokenGenerator(srcBuffer, tokenArray);
 }

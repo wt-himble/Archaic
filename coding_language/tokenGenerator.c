@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "tokenGenerator.h"
 
 bool isVarDef(char* strPtr, int strIdx) {
@@ -20,7 +22,7 @@ bool isVarDef(char* strPtr, int strIdx) {
 	}
 }
 
-void tokenGenerator(char* strPtr) {
+void tokenGenerator(char* strPtr, char* tknArrPtr) {
 
 	int strIdx = 0;
 
@@ -32,10 +34,31 @@ void tokenGenerator(char* strPtr) {
 
 				strIdx += 31;
 
-				printf("%c", strPtr[strIdx]);
+				Token* tempTknPtr = realloc(tknArrPtr, sizeof(Token) * 2);
 
+				Token A;
+				A.type = VAR_PREC;
+				A.dataPtr = NULL;
+
+				Token B;
+				B.type = VAR_DEC;
+
+				int charCounter = 0;
+
+				while (strPtr[strIdx] != ';') {
+
+					charCounter++;
+
+				}
+
+				B.dataPtr = malloc(charCounter + 1);
+
+				strncpy(B.dataPtr, strPtr + strIdx, charCounter);
+
+				B.dataPtr[-1] = '\0';
+
+				printf("This is the name of the variable found: %s", B.dataPtr);
 			}
-
 		}
 
 		strIdx++;

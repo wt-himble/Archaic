@@ -3,10 +3,8 @@
 
 typedef enum {
 
-	VAR_DEC,
-	STRING_INIT,
-	INT_INIT,
-	WHILE
+	VAR_PREC,
+	VAR_DEC
 
 } TokenType;
 

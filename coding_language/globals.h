@@ -3,8 +3,13 @@
 
 typedef enum {
 
-	VAR_PREC,
-	VAR_DEC
+	VAR_DEC,
+	VAR_REF,
+	WHILE,
+	DO,
+	LESS_THAN,
+	INT
+
 
 } TokenType;
 

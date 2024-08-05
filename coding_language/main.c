@@ -43,10 +43,8 @@ int main() {
 
 	// ********** Creating tokens ********** //
 
-	Token* tokenArray = 0;
+	Token* tokenArray = NULL;
 
-	int numOfTokens = 0;
-	int srcIdx = 0;
+	tokenGenerator(srcBuffer, &tokenArray);
 
-	tokenGenerator(srcBuffer, tokenArray);
 }

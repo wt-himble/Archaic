@@ -1,3 +1,6 @@
-Let there be a variable called x;
-Whilst x is of meager value compared to 5:
-Make known that "x is less than 5";
+Let there be a variable called VARIABLE
+Let there be a variable called OTHERVARIABLE
+Let there be a variable called THISVARIABLE
+
+Whilst THISVARIABLE is of meager value compared to 5:
+Make known that "x is less than 5"

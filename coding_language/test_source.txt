@@ -1,7 +1,8 @@
-Let there be a variable called VARIABLE
-Let there be a variable called OTHERVARIABLE
-Let there be a variable called THISVARIABLE
+Forge anew a variable known as VARIABLE
+Let VARIABLE be equal to "This is a string"
+Forge anew a variable known as OTHERVARIABLE
+Forge anew a variable known as THISVARIABLE
 
 Whilst x is of meager value compared to 5:
-Make known that "x is less than 5"
+Exclaim unto the world: "THIS IS A STATEMENT IN QUOTES"
 

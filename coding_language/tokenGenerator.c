@@ -3,23 +3,6 @@
 #include "tokenGenerator.h"
 #include "globals.h"
 
-bool varDecVerify(char** tknArrPtr, int tknIdx) {
-
-	bool valid = true;
-
-	if (strcmp(tknArrPtr[tknIdx + 1], "there") != 0 ||
-		strcmp(tknArrPtr[tknIdx + 2], "be") != 0 ||
-		strcmp(tknArrPtr[tknIdx + 3], "a") != 0 ||
-		strcmp(tknArrPtr[tknIdx + 4], "variable") != 0 ||
-		strcmp(tknArrPtr[tknIdx + 5], "called") != 0) {
-
-		valid = false;
-
-	}
-
-	return valid;
-}
-
 void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	int strIdx = 0;
@@ -29,22 +12,32 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	while (strPtr[strIdx] != '\0') {
 
-		int charCounter = 0;
+		if (strPtr[strIdx] == '"') {
 
-		while (!isspace(strPtr[strIdx])) {
+			int charCounter = 0;
 
-			charCounter++;
-			strIdx++;
+			char* quoteA = "QuoteA";
 
-		}
+			while (true) {
 
-		if (charCounter > 0) {
+				strIdx++;
 
-			char* ptr = malloc(charCounter + 1);
-			strncpy(ptr, strPtr + strIdx - charCounter, charCounter);
-			ptr[charCounter] = '\0';
+				if (strPtr[strIdx] == '"') {
 
-			tknCounter++;
+					break;
+
+				}
+
+				charCounter++;
+			}
+
+			char* text = malloc(charCounter + 1);
+			strncpy(text, strPtr + strIdx - charCounter, charCounter);
+			text[charCounter] = '\0';
+
+			char* quoteB = "QuoteB";
+
+			tknCounter += 3;
 
 			char** tempArr = realloc(tokArr, sizeof(char*) * tknCounter);
 
@@ -55,16 +48,91 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 			}
 
-			tempArr[tknCounter - 1] = ptr;
-
+			tempArr[tknCounter - 3] = quoteA;
+			tempArr[tknCounter - 2] = text;
+			tempArr[tknCounter - 1] = quoteB;
+			
 			tokArr = tempArr;
 			
 		} else {
 
-			strIdx++;
+			int charCounter = 0;
+
+			while (!isspace(strPtr[strIdx])) {
+
+				strIdx++;
+				charCounter++;
+			
+			}
+
+			if (charCounter > 0) {
+
+				char* ptr = malloc(charCounter + 1);
+				strncpy(ptr, strPtr + strIdx - charCounter, charCounter);
+				ptr[charCounter] = '\0';
+
+				tknCounter++;
+
+				char** tempArr = realloc(tokArr, sizeof(char*) * tknCounter);
+
+				if (tempArr == NULL) {
+
+					printf("ERROR. FAILED TO REALLOCATE MEMORY");
+					exit(1);
+
+				}
+
+				tempArr[tknCounter - 1] = ptr;
+
+				tokArr = tempArr;
+
+			}
 		}
+
+		strIdx++;
+
+	}
+
+	for (int i = 0; i < tknCounter; i++) {
+
+		printf("%s\n", tokArr[i]);
+
 	}
 }
+
+/*else {
+
+			while (!isspace(strPtr[strIdx])) {
+
+				if (charCounter > 0) {
+
+					char* ptr = malloc(charCounter + 1);
+					strncpy(ptr, strPtr + strIdx - charCounter, charCounter);
+					ptr[charCounter] = '\0';
+
+					tknCounter++;
+
+					char** tempArr = realloc(tokArr, sizeof(char*) * tknCounter);
+
+					if (tempArr == NULL) {
+
+						printf("ERROR. FAILED TO REALLOCATE MEMORY");
+						exit(1);
+
+					}
+
+					tempArr[tknCounter - 1] = ptr;
+
+					tokArr = tempArr;
+
+				} else {
+
+					strIdx++;
+				}
+			}
+		}
+	}*/
+
 //
 //	for (int i = 0; i < tempTknCounter; i++) {
 //

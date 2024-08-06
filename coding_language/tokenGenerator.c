@@ -23,7 +23,6 @@ bool varDecVerify(char** tknArrPtr, int tknIdx) {
 void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	int strIdx = 0;
-	int tempTknCounter = 0;
 	int tknCounter = 0;
 
 	char** tokArr = NULL;
@@ -32,72 +31,102 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 		int charCounter = 0;
 
-		while (strPtr[strIdx] != ' ' && strPtr[strIdx] != '\n') {
+		while (!isspace(strPtr[strIdx])) {
 
 			charCounter++;
 			strIdx++;
 
 		}
 
-		char** tempArr = realloc(tokArr, sizeof(char*) * (tempTknCounter+1));
+		if (charCounter > 0) {
 
-		if (tempArr == NULL) {
+			char* ptr = malloc(charCounter + 1);
+			strncpy(ptr, strPtr + strIdx - charCounter, charCounter);
+			ptr[charCounter] = '\0';
 
-			printf("ERROR. MEMORY FAILED TO REALLOCATE.");
-			exit(1);
+			tknCounter++;
 
-		}
+			char** tempArr = realloc(tokArr, sizeof(char*) * tknCounter);
 
-		char* p = malloc(charCounter + 1);
-		strncpy(p, strPtr + strIdx - charCounter, charCounter);
-		p[charCounter] = '\0';
+			if (tempArr == NULL) {
 
-		tempArr[tempTknCounter] = p;
+				printf("ERROR. FAILED TO REALLOCATE MEMORY");
+				exit(1);
 
-		tokArr = tempArr;
+			}
 
-		tempTknCounter++;
-		strIdx++;
+			tempArr[tknCounter - 1] = ptr;
 
-	}
+			tokArr = tempArr;
+			
+		} else {
 
-	for (int i = 0; i < tempTknCounter; i++) {
-
-		if (strcmp(tokArr[i], "Let") == 0) {
-
-			if (varDecVerify(tokArr, i)) {
-
-				i += 6;
-				tknCounter += 2;
-
-				printf("Variable declaration found. Variable reference is: %s\n", tokArr[i]);
-
-				Token A;
-				A.type = VAR_DEC;
-				A.dataPtr = NULL;
-
-				Token B;
-				B.type = VAR_REF;
-				B.dataPtr = tokArr[i];
-
-				Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounter);
-
-				if (tempArr == NULL) {
-
-					printf("ERROR. FAILED TO REALLOCATE MEMORY");
-					exit(1);
-
-				}
-
-				tempArr[tknCounter - 2] = A;
-				tempArr[tknCounter - 1] = B;
-
-				*tknArrPtr = tempArr;
-
-			} 
+			strIdx++;
 		}
 	}
 }
+//
+//	for (int i = 0; i < tempTknCounter; i++) {
+//
+//		if (strcmp(tokArr[i], "Let") == 0) {
+//
+//			if (varDecVerify(tokArr, i)) {
+//
+//				i += 6;
+//				tknCounter += 2;
+//
+//				printf("Variable declaration found. Variable reference is: %s\n", tokArr[i]);
+//
+//				Token A;
+//				A.type = VAR_DEC;
+//				A.dataPtr = NULL;
+//
+//				Token B;
+//				B.type = VAR_REF;
+//				B.dataPtr = tokArr[i];
+//
+//				Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounter);
+//
+//				if (tempArr == NULL) {
+//
+//					printf("ERROR. FAILED TO REALLOCATE MEMORY");
+//					exit(1);
+//
+//				}
+//
+//				tempArr[tknCounter - 2] = A;
+//				tempArr[tknCounter - 1] = B;
+//
+//				*tknArrPtr = tempArr;
+//
+//			} 
+//
+//		} else if (strcmp(tokArr[i], "Whilst") == 0) {
+//
+//			tknCounter++;
+//
+//			printf("While loop found.");
+//
+//			Token A;
+//			A.type = WHILE;
+//			A.dataPtr = NULL;
+//
+//			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounter);
+//
+//			if (tempArr == NULL) {
+//
+//				printf("ERROR. FAILED TO REALLOCATE MEMORY");
+//				exit(1);
+//
+//			}
+//
+//			tempArr[tknCounter - 1] = A;
+//
+//			*tknArrPtr = tempArr;
+//
+//		}
+//	}
+//}
 
 //
 //void tokenGenerator(char* strPtr, Token** tknArrPtr) {

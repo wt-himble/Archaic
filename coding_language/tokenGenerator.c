@@ -8,7 +8,7 @@ int tknCounterPrime = 0;
 
 char* arbPtr = "arbit";
 
-void addTokenToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn) {
+void addToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn) {
 
 	int endToken = 0;
 
@@ -122,6 +122,8 @@ TokenType valueChecker(char** tempTknArr, int* iptr) {
 
 void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
+	//***************** Cleaning up input-text *****************//
+
 	int strIdx = 0;
 	int tknCounter = 0;
 
@@ -132,7 +134,6 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 		if (strPtr[strIdx] == '"') {
 
 			int charCounter = 0;
-
 			char* quoteA = "QuoteA";
 
 			while (true) {
@@ -237,14 +238,16 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	}
 
+	//***************** Creating tokens from cleaned input-text *****************//
+
 	for (int i = 0; i < tknCounter; i++) {
 
 		remainingIdx = tknCounter - i;
 
 		if (varDecCheck(tokArr, &i)) {
 
-			addTokenToken(tknArrPtr, VAR_DEC, arbPtr);
-			addTokenToken(tknArrPtr, VAR_REF, tokArr[i]);
+			addToken(tknArrPtr, VAR_DEC, arbPtr);
+			addToken(tknArrPtr, VAR_REF, tokArr[i]);
 			
 		} else if (varInitCheck(tokArr, &i)) {
 
@@ -263,22 +266,29 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 			}
 			
-			addTokenToken(tknArrPtr, VAR_REF, tokArr[i - 6]);
-			addTokenToken(tknArrPtr, VAR_INIT, arbPtr);
-			addTokenToken(tknArrPtr, tempType, tempValue);
+			addToken(tknArrPtr, VAR_REF, tokArr[i - 6]);
+			addToken(tknArrPtr, VAR_INIT, arbPtr);
+			addToken(tknArrPtr, tempType, tempValue);
 			
 		} else if (strcmp(tokArr[i], "Whilst") == 0) {
 
-			addTokenToken(tknArrPtr, WHILE, arbPtr);
+			addToken(tknArrPtr, WHILE, arbPtr);
 			
-		} else if (strcmp(tokArr[i], ":") == 0) {
+		} else if (printCheck(tokArr, &i)) {
 
-			addTokenToken(tknArrPtr, COLON, arbPtr);
+			addToken(tknArrPtr, PRINT, arbPtr);
+			addToken(tknArrPtr, STRING, tokArr[i]);
+
+		}
+		
+		else if (strcmp(tokArr[i], ":") == 0) {
+
+			addToken(tknArrPtr, COLON, arbPtr);
 
 		} 
 	}
 
-	addTokenToken(tknArrPtr, END, arbPtr);
+	addToken(tknArrPtr, END, arbPtr);
 
 	free(tokArr);
 

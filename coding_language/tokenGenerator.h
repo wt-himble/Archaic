@@ -6,7 +6,7 @@
 #include "globals.h"
 
 void tokenGenerator(char* srcPtr, Token** tknArrPtr);
-void addTokenToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn);
+void addToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn);
 
 bool varDecCheck(char** tempTknArr, int* iptr);
 bool varInitCheck(char** tempTknArr, int* iptr);

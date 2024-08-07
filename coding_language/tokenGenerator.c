@@ -3,6 +3,73 @@
 #include "tokenGenerator.h"
 #include "globals.h"
 
+bool varDecCheck(char** tempTknArr, int* iptr) {
+
+	if (strcmp(tempTknArr[*iptr], "Forge") == 0 &&
+		strcmp(tempTknArr[*iptr + 1], "anew") == 0 &&
+		strcmp(tempTknArr[*iptr + 2], "a") == 0 &&
+		strcmp(tempTknArr[*iptr + 3], "variable") == 0 &&
+		strcmp(tempTknArr[*iptr + 4], "known") == 0 &&
+		strcmp(tempTknArr[*iptr + 5], "as") == 0) {
+
+		*iptr += 6;
+		return true;
+
+	} else {
+
+		return false;
+
+	}
+}
+
+bool varInitCheck(char** tempTknArr, int* iptr) {
+
+	if (strcmp(tempTknArr[*iptr], "Let") == 0 &&
+		strcmp(tempTknArr[*iptr + 2], "be") == 0 &&
+		strcmp(tempTknArr[*iptr + 3], "ascribed") == 0 &&
+		strcmp(tempTknArr[*iptr + 4], "the") == 0 &&
+		strcmp(tempTknArr[*iptr + 5], "value") == 0 &&
+		strcmp(tempTknArr[*iptr + 6], "of") == 0) {
+
+		*iptr += 7;
+		return true;
+
+	} else {
+
+		return false;
+
+	}
+}
+
+bool printCheck(char** tempTknArr, int* iptr) {
+
+	if (strcmp(tempTknArr[*iptr], "Exclaim") == 0 &&
+		strcmp(tempTknArr[*iptr], "unto") == 0 &&
+		strcmp(tempTknArr[*iptr], "the") == 0 &&
+		strcmp(tempTknArr[*iptr], "world") == 0) {
+
+		return true;
+	
+	} else {
+
+		return false;
+
+	}
+}
+
+TokenType valueChecker(char** tempTknArr, int* iptr) {
+
+	if (strcmp(tempTknArr[*iptr], "QuoteA") == 0) {
+
+		return STRING;
+
+	} else {
+
+		return NUMBER;
+
+	}
+}
+
 void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	int strIdx = 0;
@@ -120,230 +187,142 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	}
 
+	int tknCounterPrime = 0;
+
 	for (int i = 0; i < tknCounter; i++) {
 
-		printf("%s\n", tokArr[i]);
+		if (varDecCheck(tokArr, &i)) {
+
+			tknCounterPrime += 2;
+	
+			Token varDec;
+			varDec.type = VAR_DEC;
+			varDec.dataPtr = NULL;
+
+			Token varRef;
+			varRef.type = VAR_REF;
+			varRef.dataPtr = tokArr[i];
+
+			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
+
+			if (tempArr == NULL) {
+
+				printf("ERROR. FAILED TO REALLOCATE MEMORY");
+				exit(1);
+
+			}
+
+			tempArr[tknCounterPrime - 2] = varDec;
+			tempArr[tknCounterPrime - 1] = varRef;
+
+			*tknArrPtr = tempArr;
+			
+		} else if (varInitCheck(tokArr, &i)) {
+
+			tknCounterPrime += 3;
+
+			Token varRef;
+			varRef.type = VAR_REF;
+			varRef.dataPtr = tokArr[i - 6];
+
+			Token varInit;
+			varInit.type = VAR_INIT;
+			varInit.dataPtr = NULL;
+
+			Token value;
+			value.type = valueChecker(tokArr, &i);
+			
+			if (value.type == STRING) {
+
+				value.dataPtr = tokArr[i + 1];
+				i += 2;
+
+			} else {
+
+				value.dataPtr = tokArr[i];
+
+			}
+
+			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
+
+			if (tempArr == NULL) {
+
+				printf("ERROR. FAILED TO REALLOCATE MEMORY");
+				exit(1);
+
+			}
+
+			tempArr[tknCounterPrime - 3] = varRef;
+			tempArr[tknCounterPrime - 2] = varInit;
+			tempArr[tknCounterPrime - 1] = value;
+
+			*tknArrPtr = tempArr;
+
+		} else if (strcmp(tokArr[i], "Whilst") == 0) {
+
+			tknCounterPrime++;
+
+			Token whileToken;
+			whileToken.type = WHILE;
+			whileToken.dataPtr = NULL;
+
+			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
+
+			if (tempArr == NULL) {
+
+				printf("ERROR. FAILED TO REALLOCATE MEMORY");
+				exit(1);
+
+			}
+
+			tempArr[tknCounterPrime - 1] = whileToken;
+
+			*tknArrPtr = tempArr;
+			
+		} else if (strcmp(tokArr[i], ":") == 0) {
+
+			tknCounterPrime++;
+
+			Token colonToken;
+			colonToken.type = COLON;
+			colonToken.dataPtr = NULL;
+
+			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
+
+			if (tempArr == NULL) {
+
+				printf("ERROR. FAILED TO REALLOCATE MEMORY");
+				exit(1);
+			}
+
+			tempArr[tknCounterPrime - 1] = colonToken;
+
+			*tknArrPtr = tempArr;
+
+		} else if (printCheck(tokArr, &i)) {
+
+			printf("There is a print statement");
+
+		}
+	}
+
+	Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * (tknCounterPrime + 1));
+
+	if (tempArr == NULL) {
+
+		printf("ERROR. FAILED TO REALLOCATE MEMORY");
+		exit(1);
 
 	}
+
+	Token endToken;
+	endToken.type = END;
+	endToken.dataPtr = NULL;
+
+	tempArr[tknCounterPrime] = endToken;
+
+	*tknArrPtr = tempArr;
+
+	free(tokArr);
+
 }
-
-/*else {
-
-			while (!isspace(strPtr[strIdx])) {
-
-				if (charCounter > 0) {
-
-					char* ptr = malloc(charCounter + 1);
-					strncpy(ptr, strPtr + strIdx - charCounter, charCounter);
-					ptr[charCounter] = '\0';
-
-					tknCounter++;
-
-					char** tempArr = realloc(tokArr, sizeof(char*) * tknCounter);
-
-					if (tempArr == NULL) {
-
-						printf("ERROR. FAILED TO REALLOCATE MEMORY");
-						exit(1);
-
-					}
-
-					tempArr[tknCounter - 1] = ptr;
-
-					tokArr = tempArr;
-
-				} else {
-
-					strIdx++;
-				}
-			}
-		}
-	}*/
-
-//
-//	for (int i = 0; i < tempTknCounter; i++) {
-//
-//		if (strcmp(tokArr[i], "Let") == 0) {
-//
-//			if (varDecVerify(tokArr, i)) {
-//
-//				i += 6;
-//				tknCounter += 2;
-//
-//				printf("Variable declaration found. Variable reference is: %s\n", tokArr[i]);
-//
-//				Token A;
-//				A.type = VAR_DEC;
-//				A.dataPtr = NULL;
-//
-//				Token B;
-//				B.type = VAR_REF;
-//				B.dataPtr = tokArr[i];
-//
-//				Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounter);
-//
-//				if (tempArr == NULL) {
-//
-//					printf("ERROR. FAILED TO REALLOCATE MEMORY");
-//					exit(1);
-//
-//				}
-//
-//				tempArr[tknCounter - 2] = A;
-//				tempArr[tknCounter - 1] = B;
-//
-//				*tknArrPtr = tempArr;
-//
-//			} 
-//
-//		} else if (strcmp(tokArr[i], "Whilst") == 0) {
-//
-//			tknCounter++;
-//
-//			printf("While loop found.");
-//
-//			Token A;
-//			A.type = WHILE;
-//			A.dataPtr = NULL;
-//
-//			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounter);
-//
-//			if (tempArr == NULL) {
-//
-//				printf("ERROR. FAILED TO REALLOCATE MEMORY");
-//				exit(1);
-//
-//			}
-//
-//			tempArr[tknCounter - 1] = A;
-//
-//			*tknArrPtr = tempArr;
-//
-//		}
-//	}
-//}
-
-//
-//void tokenGenerator(char* strPtr, Token** tknArrPtr) {
-//
-//	int strIdx = 0;
-//	int numOfTokens = 0;
-//
-//	while (strPtr[strIdx] != '\0') {
-//
-//		switch (strPtr[strIdx]) {
-//
-//			case 'L':
-//
-//				if (isVarDec(strPtr, strIdx)) {
-//
-//					strIdx += 31;
-//					numOfTokens += 2;
-//
-//					Token* tempTknPtr = realloc(*tknArrPtr, sizeof(Token) * numOfTokens);
-//
-//					if (tempTknPtr == NULL) {
-//
-//						printf("\nERROR. Failed to reallocate memory in token array");
-//
-//					} else {
-//
-//						Token A;
-//						A.type = VAR_DEC;
-//						A.dataPtr = NULL;
-//
-//						Token B;
-//						B.type = VAR_REF;
-//
-//						int charCounter = 0;
-//
-//						while (strPtr[strIdx] != ';') {
-//
-//							charCounter++;
-//							strIdx++;
-//
-//						}
-//
-//						B.dataPtr = malloc(charCounter + 1);
-//
-//						strncpy(B.dataPtr, strPtr + strIdx - charCounter, charCounter);
-//
-//						B.dataPtr[charCounter] = '\0';
-//
-//						tempTknPtr[numOfTokens - 2] = A;
-//						tempTknPtr[numOfTokens - 1] = B;
-//
-//						*tknArrPtr = tempTknPtr;
-//
-//						printf("Variable declaration found. Variable reference is: %s\n", tempTknPtr[numOfTokens - 1].dataPtr);
-//
-//					}
-//				}
-//
-//				break;
-//
-//			case 'W':
-//
-//				if (isWhile(strPtr, strIdx)) {
-//
-//					strIdx += 7;
-//					numOfTokens += 4;
-//
-//					Token* tempTknPtr = realloc(*tknArrPtr, sizeof(Token) * numOfTokens);
-//
-//					if (tempTknPtr == NULL) {
-//
-//						printf("ERROR. Failed to reallocate memory in token array.");
-//
-//					} else {
-//
-//						Token A;
-//						A.type = WHILE;
-//						A.dataPtr = NULL;
-//
-//						Token B;
-//						B.type = VAR_REF;
-//
-//						Token C;
-//						C.dataPtr = NULL;
-//
-//						Token D;
-//
-//						int charCounter = 0;
-//
-//						while (strPtr[strIdx] != ' ') {
-//
-//							charCounter++;
-//							strIdx++;
-//
-//						}
-//
-//						B.dataPtr = malloc(charCounter + 1);
-//						strncpy(B.dataPtr, strPtr + strIdx - charCounter, charCounter);
-//						B.dataPtr[charCounter] = '\0';
-//
-//						
-//
-//
-//
-//
-//
-//
-//					}
-//
-//					
-//
-//
-//
-//				}
-//
-//				
-//
-//			
-//		}
-//
-//		strIdx++;
-//
-//	}
-//	
-//}

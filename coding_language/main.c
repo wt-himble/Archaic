@@ -47,4 +47,14 @@ int main() {
 
 	tokenGenerator(srcBuffer, &tokenArray);
 
+	int idx = 0;
+
+	while (tokenArray[idx].type != END) {
+
+		printf("Type: %d || Data: %s\n", tokenArray[idx].type, tokenArray[idx].dataPtr);
+
+		idx++;
+
+	}
+
 }

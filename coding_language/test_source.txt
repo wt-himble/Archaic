@@ -1,11 +1,12 @@
 Forge anew a variable known as VARIABLE
-Let VARIABLE be equal to "This is a string"
+Let VARIABLE be ascribed the value of "This is a string"
 Forge anew a variable known as OTHERVARIABLE
+Let OTHERVARIABLE be ascribed the value of 69.420
 Forge anew a variable known as THISVARIABLE
 
 Whilst x is of meager value compared to 5:
 
 Exclaim unto the world: "THIS IS A STATEMENT IN QUOTES"
 
-Thus it concludes
+Thus the statement concludes
 

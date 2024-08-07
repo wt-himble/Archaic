@@ -7,5 +7,12 @@
 
 void tokenGenerator(char* srcPtr, Token** tknArrPtr);
 
+bool varDecCheck(char** tempTknArr, int* iptr);
+bool varInitCheck(char** tempTknArr, int* iptr);
+bool printCheck(char** tempTknArr, int* iptr);
+bool isNumber(char* str);
+
+TokenType valueChecker(char** tempTknArr, int* iptr);
+
 #endif
 

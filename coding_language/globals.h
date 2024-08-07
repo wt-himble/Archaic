@@ -5,11 +5,13 @@ typedef enum {
 
 	VAR_DEC,
 	VAR_REF,
+	VAR_INIT,
 	WHILE,
-	DO,
+	COLON,
 	LESS_THAN,
-	INT
-
+	NUMBER,
+	STRING,
+	END
 
 } TokenType;
 

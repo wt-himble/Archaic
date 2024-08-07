@@ -3,15 +3,21 @@
 #include "tokenGenerator.h"
 #include "globals.h"
 
+int remainingIdx = 0;
+
 bool varDecCheck(char** tempTknArr, int* iptr) {
 
-	if (strcmp(tempTknArr[*iptr], "Forge") == 0 &&
-		strcmp(tempTknArr[*iptr + 1], "anew") == 0 &&
-		strcmp(tempTknArr[*iptr + 2], "a") == 0 &&
-		strcmp(tempTknArr[*iptr + 3], "variable") == 0 &&
-		strcmp(tempTknArr[*iptr + 4], "known") == 0 &&
-		strcmp(tempTknArr[*iptr + 5], "as") == 0) {
+	if (remainingIdx < 6) {
 
+		return false;
+
+	} else if (strcmp(tempTknArr[*iptr], "Forge") == 0 &&
+				strcmp(tempTknArr[*iptr + 1], "anew") == 0 &&
+			    strcmp(tempTknArr[*iptr + 2], "a") == 0 &&
+			    strcmp(tempTknArr[*iptr + 3], "variable") == 0 &&
+			    strcmp(tempTknArr[*iptr + 4], "known") == 0 &&
+			    strcmp(tempTknArr[*iptr + 5], "as") == 0) 
+	{
 		*iptr += 6;
 		return true;
 
@@ -24,13 +30,17 @@ bool varDecCheck(char** tempTknArr, int* iptr) {
 
 bool varInitCheck(char** tempTknArr, int* iptr) {
 
-	if (strcmp(tempTknArr[*iptr], "Let") == 0 &&
-		strcmp(tempTknArr[*iptr + 2], "be") == 0 &&
-		strcmp(tempTknArr[*iptr + 3], "ascribed") == 0 &&
-		strcmp(tempTknArr[*iptr + 4], "the") == 0 &&
-		strcmp(tempTknArr[*iptr + 5], "value") == 0 &&
-		strcmp(tempTknArr[*iptr + 6], "of") == 0) {
+	if (remainingIdx < 7) {
 
+		return false;
+
+	} else if (strcmp(tempTknArr[*iptr], "Let") == 0 &&
+			   strcmp(tempTknArr[*iptr + 2], "be") == 0 &&
+			   strcmp(tempTknArr[*iptr + 3], "ascribed") == 0 &&
+			   strcmp(tempTknArr[*iptr + 4], "the") == 0 &&
+			   strcmp(tempTknArr[*iptr + 5], "value") == 0 &&
+			   strcmp(tempTknArr[*iptr + 6], "of") == 0) 
+	{
 		*iptr += 7;
 		return true;
 
@@ -43,11 +53,17 @@ bool varInitCheck(char** tempTknArr, int* iptr) {
 
 bool printCheck(char** tempTknArr, int* iptr) {
 
-	if (strcmp(tempTknArr[*iptr], "Exclaim") == 0 &&
-		strcmp(tempTknArr[*iptr], "unto") == 0 &&
-		strcmp(tempTknArr[*iptr], "the") == 0 &&
-		strcmp(tempTknArr[*iptr], "world") == 0) {
+	if (remainingIdx < 5) {
 
+		return false;
+
+	} else if (strcmp(tempTknArr[*iptr], "Exclaim") == 0 &&
+			   strcmp(tempTknArr[*iptr], "unto") == 0 &&
+			   strcmp(tempTknArr[*iptr], "the") == 0 &&
+			   strcmp(tempTknArr[*iptr], "world") == 0) 
+	{
+
+		*iptr += 5;
 		return true;
 	
 	} else {
@@ -191,6 +207,8 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	for (int i = 0; i < tknCounter; i++) {
 
+		remainingIdx = tknCounter - i;
+
 		if (varDecCheck(tokArr, &i)) {
 
 			tknCounterPrime += 2;
@@ -301,7 +319,11 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 		} else if (printCheck(tokArr, &i)) {
 
-			printf("There is a print statement");
+			tknCounterPrime += 2;
+
+			Token printToken;
+			printToken.type = PRINT;
+			printToken.dataPtr = NULL;
 
 		}
 	}

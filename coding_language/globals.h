@@ -9,6 +9,7 @@ typedef enum {
 	WHILE,
 	COLON,
 	LESS_THAN,
+	PRINT,
 	NUMBER,
 	STRING,
 	END

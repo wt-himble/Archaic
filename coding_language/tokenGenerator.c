@@ -4,6 +4,40 @@
 #include "globals.h"
 
 int remainingIdx = 0;
+int tknCounterPrime = 0;
+
+char* arbPtr = "arbit";
+
+void addTokenToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn) {
+
+	int endToken = 0;
+
+	if (typeIn == END) {
+
+		endToken = 1;
+
+	}
+
+	Token token;
+	token.type = typeIn;
+	token.dataPtr = dataPtrIn;
+
+	tknCounterPrime++;
+
+	Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * (tknCounterPrime + endToken));
+
+	if (tempArr == NULL) {
+
+		printf("ERROR. FAILED TO REALLOCATE MEMORY");
+		exit(1);
+
+	}
+
+	tempArr[tknCounterPrime - 1] = token;
+
+	*tknArrPtr = tempArr;
+
+}
 
 bool varDecCheck(char** tempTknArr, int* iptr) {
 
@@ -203,147 +237,48 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 	}
 
-	int tknCounterPrime = 0;
-
 	for (int i = 0; i < tknCounter; i++) {
 
 		remainingIdx = tknCounter - i;
 
 		if (varDecCheck(tokArr, &i)) {
 
-			tknCounterPrime += 2;
-	
-			Token varDec;
-			varDec.type = VAR_DEC;
-			varDec.dataPtr = NULL;
-
-			Token varRef;
-			varRef.type = VAR_REF;
-			varRef.dataPtr = tokArr[i];
-
-			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
-
-			if (tempArr == NULL) {
-
-				printf("ERROR. FAILED TO REALLOCATE MEMORY");
-				exit(1);
-
-			}
-
-			tempArr[tknCounterPrime - 2] = varDec;
-			tempArr[tknCounterPrime - 1] = varRef;
-
-			*tknArrPtr = tempArr;
+			addTokenToken(tknArrPtr, VAR_DEC, arbPtr);
+			addTokenToken(tknArrPtr, VAR_REF, tokArr[i]);
 			
 		} else if (varInitCheck(tokArr, &i)) {
 
-			tknCounterPrime += 3;
+			TokenType tempType;
+			char* tempValue;
 
-			Token varRef;
-			varRef.type = VAR_REF;
-			varRef.dataPtr = tokArr[i - 6];
+			if (valueChecker(tokArr, &i) == STRING) {
 
-			Token varInit;
-			varInit.type = VAR_INIT;
-			varInit.dataPtr = NULL;
-
-			Token value;
-			value.type = valueChecker(tokArr, &i);
-			
-			if (value.type == STRING) {
-
-				value.dataPtr = tokArr[i + 1];
-				i += 2;
+				tempType = STRING;
+				tempValue = tokArr[i + 1];
 
 			} else {
 
-				value.dataPtr = tokArr[i];
+				tempType = NUMBER;
+				tempValue = tokArr[i];
 
 			}
-
-			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
-
-			if (tempArr == NULL) {
-
-				printf("ERROR. FAILED TO REALLOCATE MEMORY");
-				exit(1);
-
-			}
-
-			tempArr[tknCounterPrime - 3] = varRef;
-			tempArr[tknCounterPrime - 2] = varInit;
-			tempArr[tknCounterPrime - 1] = value;
-
-			*tknArrPtr = tempArr;
-
+			
+			addTokenToken(tknArrPtr, VAR_REF, tokArr[i - 6]);
+			addTokenToken(tknArrPtr, VAR_INIT, arbPtr);
+			addTokenToken(tknArrPtr, tempType, tempValue);
+			
 		} else if (strcmp(tokArr[i], "Whilst") == 0) {
 
-			tknCounterPrime++;
-
-			Token whileToken;
-			whileToken.type = WHILE;
-			whileToken.dataPtr = NULL;
-
-			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
-
-			if (tempArr == NULL) {
-
-				printf("ERROR. FAILED TO REALLOCATE MEMORY");
-				exit(1);
-
-			}
-
-			tempArr[tknCounterPrime - 1] = whileToken;
-
-			*tknArrPtr = tempArr;
+			addTokenToken(tknArrPtr, WHILE, arbPtr);
 			
 		} else if (strcmp(tokArr[i], ":") == 0) {
 
-			tknCounterPrime++;
+			addTokenToken(tknArrPtr, COLON, arbPtr);
 
-			Token colonToken;
-			colonToken.type = COLON;
-			colonToken.dataPtr = NULL;
-
-			Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * tknCounterPrime);
-
-			if (tempArr == NULL) {
-
-				printf("ERROR. FAILED TO REALLOCATE MEMORY");
-				exit(1);
-			}
-
-			tempArr[tknCounterPrime - 1] = colonToken;
-
-			*tknArrPtr = tempArr;
-
-		} else if (printCheck(tokArr, &i)) {
-
-			tknCounterPrime += 2;
-
-			Token printToken;
-			printToken.type = PRINT;
-			printToken.dataPtr = NULL;
-
-		}
+		} 
 	}
 
-	Token* tempArr = realloc(*tknArrPtr, sizeof(Token) * (tknCounterPrime + 1));
-
-	if (tempArr == NULL) {
-
-		printf("ERROR. FAILED TO REALLOCATE MEMORY");
-		exit(1);
-
-	}
-
-	Token endToken;
-	endToken.type = END;
-	endToken.dataPtr = NULL;
-
-	tempArr[tknCounterPrime] = endToken;
-
-	*tknArrPtr = tempArr;
+	addTokenToken(tknArrPtr, END, arbPtr);
 
 	free(tokArr);
 

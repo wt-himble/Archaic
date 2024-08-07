@@ -51,8 +51,7 @@ int main() {
 
 	while (tokenArray[idx].type != END) {
 
-		printf("Type: %d || Data: %s\n", tokenArray[idx].type, tokenArray[idx].dataPtr);
-
+		printf("TYPE: %d || Data: %s \n", tokenArray[idx].type, tokenArray[idx].dataPtr);
 		idx++;
 
 	}

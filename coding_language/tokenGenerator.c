@@ -57,18 +57,27 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 		} else {
 
 			int charCounter = 0;
+			int singleCharAdjust = 0;
 
 			while (!isspace(strPtr[strIdx])) {
 
+				if (strPtr[strIdx] != ':') {
+
+					charCounter++;
+
+				} else {
+
+					singleCharAdjust = 1;
+
+				}
+
 				strIdx++;
-				charCounter++;
-			
 			}
 
 			if (charCounter > 0) {
 
 				char* ptr = malloc(charCounter + 1);
-				strncpy(ptr, strPtr + strIdx - charCounter, charCounter);
+				strncpy(ptr, strPtr + strIdx - charCounter - singleCharAdjust, charCounter);
 				ptr[charCounter] = '\0';
 
 				tknCounter++;
@@ -86,6 +95,24 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 				tokArr = tempArr;
 
+				if (singleCharAdjust > 0) {
+
+					tknCounter++;
+
+					char* colon = ":";
+					char** tempArr = realloc(tokArr, sizeof(char*) * tknCounter);
+
+					if (tempArr == NULL) {
+
+						printf("ERROR. FAILED TO REALLOCATE MEMORY");
+						exit(1);
+					}
+
+					tempArr[tknCounter - 1] = colon;
+
+					tokArr = tempArr;
+
+				}
 			}
 		}
 

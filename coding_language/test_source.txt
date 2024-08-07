@@ -4,5 +4,8 @@ Forge anew a variable known as OTHERVARIABLE
 Forge anew a variable known as THISVARIABLE
 
 Whilst x is of meager value compared to 5:
+
 Exclaim unto the world: "THIS IS A STATEMENT IN QUOTES"
+
+Thus it concludes
 

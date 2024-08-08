@@ -7,10 +7,12 @@ Let OTHERVARIABLE be ascribed the value of 69.420
 Forge anew a variable known as ALTERNATEVARIABLE
 Let ALTERNATEVARIABLE be ascribed the value of VARIABLE
 
-Whilst x is of meager value compared to 5:
+x is of meager value compared to 5
+x is of abundant value compared to 5
+x is of equal value compared to 5
 
 Exclaim unto the world: "THIS IS A STATEMENT IN QUOTES"
 
-Thus this statement concludes
+Thus concludes this statement
 
 

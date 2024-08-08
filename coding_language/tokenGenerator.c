@@ -13,7 +13,7 @@ void addToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn) {
 
 	int endToken = 0;
 
-	if (typeIn == END) {
+	if (typeIn == FILE_END) {
 
 		endToken = 1;
 
@@ -42,7 +42,7 @@ void addToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn) {
 
 bool varDecCheck(char** tempTknArr, int* iptr) {
 
-	if (remainingIdx < 6) {
+	if (remainingIdx < 5) {
 
 		return false;
 
@@ -53,7 +53,7 @@ bool varDecCheck(char** tempTknArr, int* iptr) {
 			    strcmp(tempTknArr[*iptr + 4], "known") == 0 &&
 			    strcmp(tempTknArr[*iptr + 5], "as") == 0) 
 	{
-		*iptr += 6;
+		*iptr += 5;
 
 		return true;
 
@@ -66,7 +66,7 @@ bool varDecCheck(char** tempTknArr, int* iptr) {
 
 bool varInitCheck(char** tempTknArr, int* iptr) {
 
-	if (remainingIdx < 7) {
+	if (remainingIdx < 6) {
 
 		return false;
 
@@ -77,7 +77,7 @@ bool varInitCheck(char** tempTknArr, int* iptr) {
 			   strcmp(tempTknArr[*iptr + 5], "value") == 0 &&
 			   strcmp(tempTknArr[*iptr + 6], "of") == 0) 
 	{
-		*iptr += 7;
+		*iptr += 6;
 		return true;
 
 	} else {
@@ -105,6 +105,64 @@ bool printCheck(char** tempTknArr, int* iptr) {
 	} else {
 
 		return false;
+
+	}
+}
+
+bool endStatementCheck(char** tempTknArr, int* iptr) {
+
+	if (remainingIdx < 3) {
+
+		return false;
+
+	} else if (strcmp(tempTknArr[*iptr], "Thus") == 0 &&
+		strcmp(tempTknArr[*iptr + 1], "concludes") == 0 &&
+		strcmp(tempTknArr[*iptr + 2], "this") == 0 &&
+		strcmp(tempTknArr[*iptr + 3], "statement") == 0) {
+		*iptr += 3;
+
+		return true;
+
+	} else {
+
+		return false;
+
+	}
+}
+
+TokenType equalityStatementCheck(char** tempTknArr, int* iptr) {
+
+	if (remainingIdx < 5) {
+
+		return INVALID;
+
+	} else if (strcmp(tempTknArr[*iptr], "is") == 0 &&
+		      strcmp(tempTknArr[*iptr + 1], "of") == 0 &&
+		      strcmp(tempTknArr[*iptr + 3], "value") == 0 &&
+		      strcmp(tempTknArr[*iptr + 4], "compared") == 0 &&
+		      strcmp(tempTknArr[*iptr + 5], "to") == 0) {
+
+		if (strcmp(tempTknArr[*iptr + 2], "meager") == 0) {
+
+			return LESS_THAN;
+
+		} else if (strcmp(tempTknArr[*iptr + 2], "abundant") == 0) {
+
+			return GREATER_THAN;
+
+		} else if (strcmp(tempTknArr[*iptr + 2], "equal") == 0) {
+
+			return EQUAL_TO;
+
+		} else {
+
+			return INVALID;
+
+		}
+
+	} else {
+
+		return INVALID;
 
 	}
 }
@@ -268,23 +326,11 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 		if (varDecCheck(tokArr, &i)) {
 
 			addToken(tknArrPtr, VAR_DEC, arbPtr);
-			addToken(tknArrPtr, VAR_REF, tokArr[i]);
 			
 		} else if (varInitCheck(tokArr, &i)) {
 
-			TokenType tempType;
-			char* tempValue;
-			int strAdjust = 0;
-
-			if (valueChecker(tokArr, &i) == STRING) {
-
-				strAdjust = 1;
-
-			}
-
-			addToken(tknArrPtr, VAR_REF, tokArr[i - 6]);
+			addToken(tknArrPtr, VAR_REF, tokArr[i - 5]);
 			addToken(tknArrPtr, VAR_INIT, arbPtr);
-			addToken(tknArrPtr, valueChecker(tokArr, &i), tokArr[i + strAdjust]);
 			
 		} else if (strcmp(tokArr[i], "Whilst") == 0) {
 
@@ -294,16 +340,36 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 			addToken(tknArrPtr, PRINT, arbPtr);
 
-		}
-		
-		else if (strcmp(tokArr[i], ":") == 0) {
+		} else if (strcmp(tokArr[i], ":") == 0) {
 
 			addToken(tknArrPtr, COLON, arbPtr);
 
-		} 
+		} else if (endStatementCheck(tokArr, &i)) {
+
+			addToken(tknArrPtr, STATEMENT_END, arbPtr);
+
+		} else if (equalityStatementCheck(tokArr, &i) != INVALID) {
+
+			addToken(tknArrPtr, equalityStatementCheck(tokArr, &i), arbPtr);
+			i += 5;
+
+		} else {
+
+			if (valueChecker(tokArr, &i) == STRING) {
+
+				i++;
+				addToken(tknArrPtr, STRING, tokArr[i]);
+				i++;
+
+			} else {
+
+				addToken(tknArrPtr, valueChecker(tokArr, &i), tokArr[i]);
+
+			}
+		}
 	}
 
-	addToken(tknArrPtr, END, arbPtr);
+	addToken(tknArrPtr, FILE_END, arbPtr);
 
 	free(tokArr);
 

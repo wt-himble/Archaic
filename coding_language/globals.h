@@ -7,17 +7,21 @@ typedef enum {
 	VAR_REF,			// 1
 	VAR_INIT,			// 2			
 	WHILE,				// 3
-	COLON,				// 4
-	LESS_THAN, 			// 5
-	GREATER_THAN,		// 6
-	EQUAL_TO,           // 7
-	UNEQUAL_TO,         // 8
-	PRINT,				// 9
-	NUMBER,				// 10
-	STRING,				// 11
-	STATEMENT_END,      // 12
-	FILE_END,			// 13
-	INVALID             // 14
+	IF,                 // 4
+	ELSE,               // 5
+	COLON,				// 6
+	LESS_THAN, 			// 7
+	GREATER_THAN,		// 8
+	EQUAL_TO,           // 9
+	UNEQUAL_TO,         // 10
+	PRINT,				// 11
+	NUMBER,				// 12
+	STRING,				// 13
+	STATEMENT_END,      // 14
+	FILE_END,			// 15
+	INVALID,            // 16
+	ADD,                // 17
+	SUBTRACT            // 18
 
 } TokenType;
 
@@ -27,6 +31,8 @@ static char const* TokenTypeCast[] = {
 	"VAR_REF      ",
 	"=            ",
 	"WHILE        ",
+	"IF           ",
+	"ELSE         ",
 	"COLON        ",
 	"<            ",
 	">            ",
@@ -37,7 +43,9 @@ static char const* TokenTypeCast[] = {
 	"STRING       ",
 	"STATEMENT_END",
 	"FILE_END     ",
-	"INVALID      "
+	"INVALID      ",
+	"ADD          ",
+	"SUBTRACT     "
 };
 
 typedef struct {

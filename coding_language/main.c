@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 #include "globals.h"
-#include "tokenGenerator.h"
+#include "lexer.h"
 
 int main() {
 

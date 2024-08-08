@@ -12,6 +12,8 @@ bool varDecCheck(char** tempTknArr, int* iptr);
 bool varInitCheck(char** tempTknArr, int* iptr);
 bool printCheck(char** tempTknArr, int* iptr);
 bool endStatementCheck(char** tempTknArr, int* iptr);
+bool addCheck(char** tempTknArr, int* iptr);
+bool subtractCheck(char** tempTknArr, int* iptr);
 bool containsLetter(char* str);
 
 TokenType equalityStatementCheck(char** tempTknArr, int* iptr);

@@ -1,16 +1,19 @@
 Forge anew a variable known as VARIABLE
-Let VARIABLE be ascribed the value of "This is a string"
+Let VARIABLE be ascribed the value of 5
 
-Forge anew a variable known as OTHERVARIABLE
-Let OTHERVARIABLE be ascribed the value of 69.420
+Whilst VARIABLE is of meager value compared to 6:
 
-Forge anew a variable known as ALTERNATEVARIABLE
-Let ALTERNATEVARIABLE be ascribed the value of VARIABLE
+	Should VARIABLE be of meager value compared to 6:
 
-Whilst x is of abundant value compared to 5:
+		Exclaim unto the world "This code works!"
+		Rend 1 from VARIABLE
 
-Exclaim unto the world: "THIS IS A STATEMENT IN QUOTES"
+	Thus concludes this statement
 
+	Otherwise: 
+
+		Exclaim unto the world "This code is working differently"
+		Embolden VARIABLE with 1
+
+	Thus concludes this statement
 Thus concludes this statement
-
-

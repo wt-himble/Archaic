@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include "tokenGenerator.h"
+#include "lexer.h"
 #include "globals.h"
 
 int remainingIdx = 0;
@@ -136,12 +136,11 @@ TokenType equalityStatementCheck(char** tempTknArr, int* iptr) {
 
 		return INVALID;
 
-	} else if (strcmp(tempTknArr[*iptr], "is") == 0 &&
-		      strcmp(tempTknArr[*iptr + 1], "of") == 0 &&
-		      strcmp(tempTknArr[*iptr + 3], "value") == 0 &&
-		      strcmp(tempTknArr[*iptr + 4], "compared") == 0 &&
-		      strcmp(tempTknArr[*iptr + 5], "to") == 0) {
-
+	} else if (strcmp(tempTknArr[*iptr + 1], "of") == 0 &&
+		       strcmp(tempTknArr[*iptr + 3], "value") == 0 &&
+		       strcmp(tempTknArr[*iptr + 4], "compared") == 0 &&
+		       strcmp(tempTknArr[*iptr + 5], "to") == 0) {
+		
 		if (strcmp(tempTknArr[*iptr + 2], "meager") == 0) {
 
 			return LESS_THAN;
@@ -167,6 +166,43 @@ TokenType equalityStatementCheck(char** tempTknArr, int* iptr) {
 	} else {
 
 		return INVALID;
+
+	}
+}
+
+bool addCheck(char** tempTknArr, int* iptr) {
+
+	if (remainingIdx < 1) {
+
+		return false;
+
+	} else if (strcmp(tempTknArr[*iptr], "Embolden") == 0 &&
+		strcmp(tempTknArr[*iptr + 2], "with") == 0) {
+		*iptr += 1;
+		return true;
+
+	} else {
+
+		return false;
+
+	}
+}
+
+bool subtractCheck(char** tempTknArr, int* iptr) {
+
+	if (remainingIdx < 1) {
+
+		return false;
+
+	} else if (strcmp(tempTknArr[*iptr], "Rend") == 0 &&
+		strcmp(tempTknArr[*iptr + 2], "from") == 0) 
+	{
+		*iptr += 1;
+		return true;
+
+	} else {
+
+		return false;
 
 	}
 }
@@ -340,6 +376,14 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 			addToken(tknArrPtr, WHILE, arbPtr);
 			
+		} else if (strcmp(tokArr[i], "Should") == 0) {
+
+			addToken(tknArrPtr, IF, arbPtr);
+
+		} else if (strcmp(tokArr[i], "Otherwise") == 0) {
+
+			addToken(tknArrPtr, ELSE, arbPtr);
+
 		} else if (printCheck(tokArr, &i)) {
 
 			addToken(tknArrPtr, PRINT, arbPtr);
@@ -356,6 +400,18 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 			addToken(tknArrPtr, equalityStatementCheck(tokArr, &i), arbPtr);
 			i += 5;
+
+		} else if (subtractCheck(tokArr, &i)) {
+
+			addToken(tknArrPtr, SUBTRACT, arbPtr);
+			addToken(tknArrPtr, valueChecker(tokArr, &i), tokArr[i]);
+			i++;
+
+		} else if (addCheck(tokArr, &i)) {
+
+			addToken(tknArrPtr, ADD, arbPtr);
+			addToken(tknArrPtr, valueChecker(tokArr, &i), tokArr[i]);
+			i++;
 
 		} else {
 

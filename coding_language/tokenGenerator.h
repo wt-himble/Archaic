@@ -11,7 +11,7 @@ void addToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn);
 bool varDecCheck(char** tempTknArr, int* iptr);
 bool varInitCheck(char** tempTknArr, int* iptr);
 bool printCheck(char** tempTknArr, int* iptr);
-bool isNumber(char* str);
+bool containsLetter(char* str);
 
 TokenType valueChecker(char** tempTknArr, int* iptr);
 

@@ -4,10 +4,13 @@ Let VARIABLE be ascribed the value of "This is a string"
 Forge anew a variable known as OTHERVARIABLE
 Let OTHERVARIABLE be ascribed the value of 69.420
 
+Forge anew a variable known as ALTERNATEVARIABLE
+Let ALTERNATEVARIABLE be ascribed the value of VARIABLE
+
 Whilst x is of meager value compared to 5:
 
 Exclaim unto the world: "THIS IS A STATEMENT IN QUOTES"
 
-Thus the statement concludes
+Thus this statement concludes
 
 

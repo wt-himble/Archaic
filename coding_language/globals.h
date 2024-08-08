@@ -16,6 +16,18 @@ typedef enum {
 
 } TokenType;
 
+static char const* TokenTypeCast[] = {"VAR_DEC",
+								      "VAR_REF",
+							          "EQUALS ",
+							          "WHILE  ",
+							          "COLON  ",
+							          "LESS_THAN",
+							          "PRINT  ",
+							          "NUMBER ",
+							          "STRING ",
+							          "END"
+};
+
 typedef struct {
 
 	TokenType type;

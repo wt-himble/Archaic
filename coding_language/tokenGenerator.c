@@ -4,6 +4,7 @@
 #include "globals.h"
 
 int remainingIdx = 0;
+int tknCounter = 0;
 int tknCounterPrime = 0;
 
 char* arbPtr = "arbit";
@@ -53,6 +54,7 @@ bool varDecCheck(char** tempTknArr, int* iptr) {
 			    strcmp(tempTknArr[*iptr + 5], "as") == 0) 
 	{
 		*iptr += 6;
+
 		return true;
 
 	} else {
@@ -87,17 +89,17 @@ bool varInitCheck(char** tempTknArr, int* iptr) {
 
 bool printCheck(char** tempTknArr, int* iptr) {
 
-	if (remainingIdx < 5) {
+	if (remainingIdx < 3) {
 
 		return false;
 
 	} else if (strcmp(tempTknArr[*iptr], "Exclaim") == 0 &&
-			   strcmp(tempTknArr[*iptr], "unto") == 0 &&
-			   strcmp(tempTknArr[*iptr], "the") == 0 &&
-			   strcmp(tempTknArr[*iptr], "world") == 0) 
+			   strcmp(tempTknArr[*iptr + 1], "unto") == 0 &&
+			   strcmp(tempTknArr[*iptr + 2], "the") == 0 &&
+			   strcmp(tempTknArr[*iptr + 3], "world") == 0) 
 	{
 
-		*iptr += 5;
+		*iptr += 3;
 		return true;
 	
 	} else {
@@ -107,15 +109,35 @@ bool printCheck(char** tempTknArr, int* iptr) {
 	}
 }
 
+bool containsLetter(char* str) {
+
+	for (int i = 0; i < strlen(str); i++) {
+
+		if ((str[i] > 57 || str[i] < 48) && str[i] != 46) {
+
+			return true;
+
+		} else {
+
+			return false;
+
+		}
+	}
+}
+
 TokenType valueChecker(char** tempTknArr, int* iptr) {
 
 	if (strcmp(tempTknArr[*iptr], "QuoteA") == 0) {
 
 		return STRING;
 
-	} else {
+	} else if (!containsLetter(tempTknArr[*iptr])) {
 
 		return NUMBER;
+
+	} else {
+
+		return VAR_REF;
 
 	}
 }
@@ -125,7 +147,6 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 	//***************** Cleaning up input-text *****************//
 
 	int strIdx = 0;
-	int tknCounter = 0;
 
 	char** tokArr = NULL;
 
@@ -253,22 +274,17 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 			TokenType tempType;
 			char* tempValue;
+			int strAdjust = 0;
 
 			if (valueChecker(tokArr, &i) == STRING) {
 
-				tempType = STRING;
-				tempValue = tokArr[i + 1];
-
-			} else {
-
-				tempType = NUMBER;
-				tempValue = tokArr[i];
+				strAdjust = 1;
 
 			}
-			
+
 			addToken(tknArrPtr, VAR_REF, tokArr[i - 6]);
 			addToken(tknArrPtr, VAR_INIT, arbPtr);
-			addToken(tknArrPtr, tempType, tempValue);
+			addToken(tknArrPtr, valueChecker(tokArr, &i), tokArr[i + strAdjust]);
 			
 		} else if (strcmp(tokArr[i], "Whilst") == 0) {
 
@@ -277,7 +293,6 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 		} else if (printCheck(tokArr, &i)) {
 
 			addToken(tknArrPtr, PRINT, arbPtr);
-			addToken(tknArrPtr, STRING, tokArr[i]);
 
 		}
 		

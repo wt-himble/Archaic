@@ -154,6 +154,10 @@ TokenType equalityStatementCheck(char** tempTknArr, int* iptr) {
 
 			return EQUAL_TO;
 
+		} else if (strcmp(tempTknArr[*iptr + 2], "unequal") == 0) {
+
+			return UNEQUAL_TO;
+
 		} else {
 
 			return INVALID;

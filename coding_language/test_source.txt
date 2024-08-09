@@ -1,19 +1,12 @@
 Forge anew a variable known as VARIABLE
 Let VARIABLE be ascribed the value of 5
-
 Whilst VARIABLE is of meager value compared to 6:
-
-Should VARIABLE be of meager value compared to 6:
-
+Should VARIABLE be of abundant value compared to TESTVARIABLE:
 Exclaim unto the world "This code works!"
 Rend 1 from VARIABLE
-
 Thus concludes this statement
-
 Otherwise: 
-
 Exclaim unto the world "This code is working differently"
 Embolden VARIABLE with 1
-
 Thus concludes this statement
 Thus concludes this statement

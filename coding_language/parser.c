@@ -31,6 +31,10 @@ M_Node createCondSubTree(Token* tknArrPtr, int* iptr) {
 		subRoot.A = &subRootA;
 		subRoot.B = &subRootB;
 
+		printf("Generated conditional operator of type: %s\n", TokenTypeCast[subRoot.type]);
+		printf("A: %s\n", subRoot.A->dataPtr);
+		printf("B: %s\n\n", subRoot.B->dataPtr);
+
 		*iptr += 3;
 		return subRoot;
 
@@ -61,7 +65,8 @@ void addReturnNode(M_Node returnNode, M_Node** returnArray) {
 
 M_Node* ASTGenerator(Token* tknArrPtr) {
 
-	M_Node* root;
+	M_Node* root = NULL;
+	M_Node* prevNode = NULL;
 	M_Node** returnNodeArray = NULL;
 	
 	int idx = 0;
@@ -72,9 +77,10 @@ M_Node* ASTGenerator(Token* tknArrPtr) {
 
 		if (tknArrPtr[idx].type == WHILE) {
 
-			M_Node newNode;
 			newNode.type = WHILE;
 			newNode.dataPtr = tknArrPtr[idx].dataPtr;
+
+			printf("Creating WHILE Node\n");
 
 			M_Node condSubTree = createCondSubTree(tknArrPtr, &idx);
 
@@ -83,8 +89,33 @@ M_Node* ASTGenerator(Token* tknArrPtr) {
 			numOfReturnNodes++;
 
 			addReturnNode(newNode, returnNodeArray);
+
+			prevNode = &newNode.B;
 	
+		} else if (tknArrPtr[idx].type == IF) {
+
+			newNode.type = IF;
+			newNode.dataPtr = tknArrPtr[idx].dataPtr;
+
+			printf("Creating IF Node\n");
+
+			M_Node condSubTree = createCondSubTree(tknArrPtr, &idx);
+
+			newNode.A = &condSubTree;
+
+			numOfReturnNodes++;
+
+			addReturnNode(newNode, returnNodeArray);
+
+			prevNode = &newNode.B;
+
 		}
+
+		if (root == NULL) {
+
+			root = &newNode;
+
+		} 
 
 		idx++;
 

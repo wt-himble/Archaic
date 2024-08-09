@@ -29,7 +29,7 @@ static char const* TokenTypeCast[] = {
 	
 	"VAR_DEC      ",
 	"VAR_REF      ",
-	"=            ",
+	"VAR_INIT     ",
 	"WHILE        ",
 	"IF           ",
 	"ELSE         ",

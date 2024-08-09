@@ -1,5 +1,5 @@
-#ifndef TOKEN_GEN_H
-#define TOKEN_GEN_H
+#ifndef LEXER_H
+#define LEXER_H
 
 #include <stdbool.h>
 

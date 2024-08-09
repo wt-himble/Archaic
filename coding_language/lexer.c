@@ -369,8 +369,8 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 			
 		} else if (varInitCheck(tokArr, &i)) {
 
-			addToken(tknArrPtr, VAR_REF, tokArr[i - 5]);
 			addToken(tknArrPtr, VAR_INIT, arbPtr);
+			addToken(tknArrPtr, VAR_REF, tokArr[i - 5]);
 			
 		} else if (strcmp(tokArr[i], "Whilst") == 0) {
 
@@ -430,7 +430,5 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 	}
 
 	addToken(tknArrPtr, FILE_END, arbPtr);
-
-	free(tokArr);
 
 }

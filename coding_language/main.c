@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "lexer.h"
+#include "parser.h"
 
 int main() {
 
@@ -46,14 +47,15 @@ int main() {
 	Token* tokenArray = NULL;
 
 	tokenGenerator(srcBuffer, &tokenArray);
+	ASTGenerator(tokenArray);
 
 	int idx = 0;
 
-	while (tokenArray[idx].type != FILE_END) {
+	/*while (tokenArray[idx].type != FILE_END) {
 
 		printf("TYPE: %s || Data: %s \n", TokenTypeCast[tokenArray[idx].type], tokenArray[idx].dataPtr);
 		idx++;
 
-	}
+	}*/
 
 }

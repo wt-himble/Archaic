@@ -44,82 +44,69 @@ M_Node createCondSubTree(Token* tknArrPtr, int* iptr) {
 		exit(2);
 
 	}
-}
-
-void addReturnNode(M_Node returnNode, M_Node** returnArray) {
-
-	M_Node** tempReturnArray = realloc(returnArray, sizeof(M_Node*) * numOfReturnNodes);
-
-	if (tempReturnArray == NULL) {
-
-		printf("ERROR. FAILED TO REALLOCATE MEMORY");
-		exit(1);
-
-	}
-
-	tempReturnArray[numOfReturnNodes - 1] = &returnNode;
-	returnArray = tempReturnArray;
 
 }
 
+int idx = 0;
 
-M_Node* ASTGenerator(Token* tknArrPtr) {
+M_Node* ASTGenerator(Token* tknArr) {
 
-	M_Node* root = NULL;
-	M_Node* prevNode = NULL;
-	M_Node** returnNodeArray = NULL;
-	
-	int idx = 0;
+	while (tknArr[idx].type != FILE_END) {
 
-	while (tknArrPtr[idx].type != FILE_END) {
+		switch (tknArr[idx].type) {
 
-		M_Node newNode;
+			case WHILE:
 
-		if (tknArrPtr[idx].type == WHILE) {
+				printf("WHILE\n");
+				break;
 
-			newNode.type = WHILE;
-			newNode.dataPtr = tknArrPtr[idx].dataPtr;
+			case IF:
 
-			printf("Creating WHILE Node\n");
+				printf("IF\n");
+				break;
 
-			M_Node condSubTree = createCondSubTree(tknArrPtr, &idx);
+			case PRINT:
 
-			newNode.A = &condSubTree;
+				printf("PRINT\n");
+				break;
 
-			numOfReturnNodes++;
+			case VAR_DEC:
 
-			addReturnNode(newNode, returnNodeArray);
+				printf("VAR_DEC\n");
+				break;
 
-			prevNode = &newNode.B;
-	
-		} else if (tknArrPtr[idx].type == IF) {
+			case VAR_INIT:
 
-			newNode.type = IF;
-			newNode.dataPtr = tknArrPtr[idx].dataPtr;
+				printf("VAR_INIT\n");
+				break;
 
-			printf("Creating IF Node\n");
+			case ELSE:
 
-			M_Node condSubTree = createCondSubTree(tknArrPtr, &idx);
+				printf("ELSE\n");
+				break;
 
-			newNode.A = &condSubTree;
+			case ADD:
 
-			numOfReturnNodes++;
+				printf("ADD\n");
+				break;
 
-			addReturnNode(newNode, returnNodeArray);
+			case SUBTRACT: 
 
-			prevNode = &newNode.B;
+				printf("SUB\n");
+				break;
+
+			default:
+
+				printf("*\n");
 
 		}
 
-		if (root == NULL) {
-
-			root = &newNode;
-
-		} 
-
 		idx++;
+
 
 	}
 }
+
+
 
 

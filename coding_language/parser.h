@@ -14,9 +14,8 @@ typedef struct node_struct{
 
 } M_Node;
 
-M_Node* ASTGenerator(Token* tknArrPtr);
+M_Node* ASTGenerator(Token* tknArr);
 
 M_Node createCondSubTree(Token* tknArrPtr, int* iptr);
-void addReturnNode(M_Node returnNode, M_Node** returnArray);
 
 #endif

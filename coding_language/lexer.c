@@ -388,10 +388,6 @@ void tokenGenerator(char* strPtr, Token** tknArrPtr) {
 
 			addToken(tknArrPtr, PRINT, arbPtr);
 
-		} else if (strcmp(tokArr[i], ":") == 0) {
-
-			addToken(tknArrPtr, COLON, arbPtr);
-
 		} else if (endStatementCheck(tokArr, &i)) {
 
 			addToken(tknArrPtr, STATEMENT_END, arbPtr);

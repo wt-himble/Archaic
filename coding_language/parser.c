@@ -31,12 +31,13 @@ M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
 M_Node* ASTGenerator(Token* tknArr) {
 
+	M_Node* rootNode = NULL;
+	M_Node* prevNodePtr = NULL;
+
 	while (tknArr[idx].type != FILE_END) {
 
 		M_Node currentNode;
-		M_Node* nextNodePtr = NULL;
-		bool subLoop = false;
-
+		
 		switch (tknArr[idx].type) {
 
 		case WHILE:
@@ -47,10 +48,9 @@ M_Node* ASTGenerator(Token* tknArr) {
 
 			currentNode.A = CondSubTreeGenerator(tknArr[idx + 2], tknArr[idx + 1], tknArr[idx + 3]);
 
-			subLoop = true;
+			idx += 3;
 
 		} break;
-
 
 		case IF:
 
@@ -60,51 +60,137 @@ M_Node* ASTGenerator(Token* tknArr) {
 
 			currentNode.A = CondSubTreeGenerator(tknArr[idx + 2], tknArr[idx + 1], tknArr[idx + 3]);
 
-			subLoop = true;
+			idx += 3;
 
 		} break;
 
-			case PRINT:
+		case PRINT:
+
+		{
+			currentNode.type = PRINT;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
+
+			M_Node printNode;
+
+			printNode.type = tknArr[idx + 1].type;
+			printNode.dataPtr = tknArr[idx + 1].dataPtr;
+
+			currentNode.A = &printNode;
+
+			idx++;
+
+		} break;
+
+		case VAR_DEC:
+
+		{
+			currentNode.type = VAR_DEC;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
+
+			M_Node varRef;
+
+			varRef.type = tknArr[idx + 1].type;
+			varRef.dataPtr = tknArr[idx + 1].dataPtr;
+
+			currentNode.A = &varRef;
+
+			idx++;
+
+		} break;
+
+		case VAR_INIT:
+
+		{
+			currentNode.type = VAR_INIT;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
+
+			M_Node varRef, varVal;
+
+			varRef.type = tknArr[idx + 1].type;
+			varRef.dataPtr = tknArr[idx + 1].dataPtr;
+
+			varVal.type = tknArr[idx + 2].type;
+			varVal.dataPtr = tknArr[idx + 2].dataPtr;
+
+			currentNode.A = &varRef;
+			currentNode.B = &varVal;
+
+			idx+=2;
 
 
+		} break;
 
+		case ELSE:
 
+		{
+			currentNode.type = ELSE;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
 
-				break;
+		} break;
 
-			case VAR_DEC:
+		case ADD:
 
-				
-				break;
+		{
+			currentNode.type = ADD;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
 
-			case VAR_INIT:
+			M_Node valA, valB;
 
-			
-				break;
+			valA.type = tknArr[idx + 1].type;
+			valA.dataPtr = tknArr[idx + 1].dataPtr;
 
-			case ELSE:
+			valB.type = tknArr[idx + 2].type;
+			valB.dataPtr = tknArr[idx + 2].dataPtr;
 
-			
-				break;
+			currentNode.A = &valA;
+			currentNode.B = &valB;
 
-			case ADD:
+			idx += 2;
 
-				break;
+		} break;
 
-			case SUBTRACT: 
+		case SUBTRACT:
 
-			
-				break;
+		{
+			currentNode.type = SUBTRACT;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
+
+			M_Node valA, valB;
+
+			valA.type = tknArr[idx + 1].type;
+			valA.dataPtr = tknArr[idx + 1].dataPtr;
+
+			valB.type = tknArr[idx + 2].type;
+			valB.dataPtr = tknArr[idx + 2].dataPtr;
+
+			currentNode.A = &valA;
+			currentNode.B = &valB;
+
+			idx += 2;
+
+		} break;
+
+		case STATEMENT_END:
+
+		{
+			currentNode.type = STATEMENT_END;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
+
+		} break;
 
 		}
 
-		if (subLoop) {
+		if (rootNode == NULL) {
 
-			nextNodePtr = currentNode.B;
+			rootNode = &currentNode;
+			prevNodePtr = &currentNode;
 
 		} else {
 
-			nextNodePtr = currentNode.next;
+			printf("%s\n", TokenTypeCast[currentNode.type]);
+
+			prevNodePtr->next = &currentNode;
+			prevNodePtr = &currentNode;
 
 		}
 

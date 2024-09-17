@@ -1,103 +1,110 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "globals.h"
 #include "parser.h"
 
 int numOfReturnNodes = 0;
 
-M_Node createCondSubTree(Token* tknArrPtr, int* iptr) {
+int idx = 0;
 
-	M_Node subRoot;
+M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
-	if (tknArrPtr[*iptr + 2].type == EQUAL_TO ||
-		tknArrPtr[*iptr + 2].type == UNEQUAL_TO ||
-		tknArrPtr[*iptr + 2].type == LESS_THAN ||
-		tknArrPtr[*iptr + 2].type == GREATER_THAN) 
-	{
-		subRoot.type = tknArrPtr[*iptr + 2].type;
-		subRoot.dataPtr = tknArrPtr[*iptr + 2].dataPtr;
+	M_Node Op, A, B;
 
-		M_Node subRootA;
+	Op.type = TokOp.type;
+	Op.dataPtr = TokOp.dataPtr;
 
-		subRootA.type = tknArrPtr[*iptr + 1].type;
-		subRootA.dataPtr = tknArrPtr[*iptr + 1].dataPtr;
+	A.type = TokA.type;
+	A.dataPtr = TokA.dataPtr;
 
-		M_Node subRootB;
+	B.type = TokB.type;
+	B.dataPtr = TokB.dataPtr;
 
-		subRootB.type = tknArrPtr[*iptr + 3].type;
-		subRootB.dataPtr = tknArrPtr[*iptr + 3].dataPtr;
+	Op.A = &A;
+	Op.B = &B;
 
-		subRoot.A = &subRootA;
-		subRoot.B = &subRootB;
-
-		printf("Generated conditional operator of type: %s\n", TokenTypeCast[subRoot.type]);
-		printf("A: %s\n", subRoot.A->dataPtr);
-		printf("B: %s\n\n", subRoot.B->dataPtr);
-
-		*iptr += 3;
-		return subRoot;
-
-	} else {
-
-		printf("Expected conditional statement");
-		exit(2);
-
-	}
+	return &Op;
 
 }
-
-int idx = 0;
 
 M_Node* ASTGenerator(Token* tknArr) {
 
 	while (tknArr[idx].type != FILE_END) {
 
+		M_Node currentNode;
+		M_Node* nextNodePtr = NULL;
+		bool subLoop = false;
+
 		switch (tknArr[idx].type) {
 
-			case WHILE:
+		case WHILE:
 
-				printf("WHILE\n");
-				break;
+		{
+			currentNode.type = WHILE;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
 
-			case IF:
+			currentNode.A = CondSubTreeGenerator(tknArr[idx + 2], tknArr[idx + 1], tknArr[idx + 3]);
 
-				printf("IF\n");
-				break;
+			subLoop = true;
+
+		} break;
+
+
+		case IF:
+
+		{
+			currentNode.type = IF;
+			currentNode.dataPtr = tknArr[idx].dataPtr;
+
+			currentNode.A = CondSubTreeGenerator(tknArr[idx + 2], tknArr[idx + 1], tknArr[idx + 3]);
+
+			subLoop = true;
+
+		} break;
 
 			case PRINT:
 
-				printf("PRINT\n");
+
+
+
+
 				break;
 
 			case VAR_DEC:
 
-				printf("VAR_DEC\n");
+				
 				break;
 
 			case VAR_INIT:
 
-				printf("VAR_INIT\n");
+			
 				break;
 
 			case ELSE:
 
-				printf("ELSE\n");
+			
 				break;
 
 			case ADD:
 
-				printf("ADD\n");
 				break;
 
 			case SUBTRACT: 
 
-				printf("SUB\n");
+			
 				break;
 
-			default:
+		}
 
-				printf("*\n");
+		if (subLoop) {
+
+			nextNodePtr = currentNode.B;
+
+		} else {
+
+			nextNodePtr = currentNode.next;
 
 		}
 

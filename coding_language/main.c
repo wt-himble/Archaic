@@ -53,7 +53,7 @@ int main() {
 
 	/*while (tokenArray[idx].type != FILE_END) {
 
-		printf("TYPE: %s || Data: %s \n", TokenTypeCast[tokenArray[idx].type], tokenArray[idx].dataPtr);
+		printf("type: %s || data: %s \n", TokenTypeCast[tokenArray[idx].type], tokenArray[idx].dataPtr);
 		idx++;
 
 	}*/

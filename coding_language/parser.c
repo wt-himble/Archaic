@@ -5,9 +5,14 @@
 #include "globals.h"
 #include "parser.h"
 
-int numOfReturnNodes = 0;
-
 int idx = 0;
+
+M_Node** retNodes = NULL;
+int retNodeCounter = 0;
+bool retNodeCheck = false;
+bool subLoop = false;
+bool statementEnd = false;
+bool retNodeActive = false;
 
 M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
@@ -31,6 +36,25 @@ M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
 }
 
+void addRetNode(M_Node* currentNodePtr) {
+
+	retNodeCounter++;
+
+	M_Node** tempRetNodeArray = realloc(retNodes, sizeof(M_Node*) * retNodeCounter);
+
+	tempRetNodeArray[retNodeCounter - 1] = currentNodePtr;
+
+	if (tempRetNodeArray == NULL) {
+
+		printf("Failed to allocate memory for return node");
+		exit(1);
+
+	}
+
+	retNodes = tempRetNodeArray;
+
+}
+
 M_Node* ASTGenerator(Token* tknArr) {
 
 	M_Node* rootNode = NULL;
@@ -50,6 +74,8 @@ M_Node* ASTGenerator(Token* tknArr) {
 
 			currentNode->A = CondSubTreeGenerator(tknArr[idx + 2], tknArr[idx + 1], tknArr[idx + 3]);
 
+			retNodeCheck = true;
+
 			idx += 3;
 
 		} break;
@@ -61,6 +87,8 @@ M_Node* ASTGenerator(Token* tknArr) {
 			currentNode->dataPtr = tknArr[idx].dataPtr;
 
 			currentNode->A = CondSubTreeGenerator(tknArr[idx + 2], tknArr[idx + 1], tknArr[idx + 3]);
+
+			retNodeCheck = true;
 
 			idx += 3;
 
@@ -129,6 +157,8 @@ M_Node* ASTGenerator(Token* tknArr) {
 			currentNode->type = ELSE;
 			currentNode->dataPtr = tknArr[idx].dataPtr;
 
+			retNodeCheck = true;
+
 		} break;
 
 		case ADD:
@@ -181,7 +211,19 @@ M_Node* ASTGenerator(Token* tknArr) {
 			currentNode->type = STATEMENT_END;
 			currentNode->dataPtr = tknArr[idx].dataPtr;
 
+			statementEnd = true;
+
 		} break;
+
+		}
+
+		if (retNodeActive) {
+
+			prevNodePtr = retNodes[retNodeCounter - 1];
+
+			retNodeCounter--;
+
+			retNodeActive = false;
 
 		}
 
@@ -190,10 +232,33 @@ M_Node* ASTGenerator(Token* tknArr) {
 			rootNode = currentNode;
 			prevNodePtr = currentNode;
 
+		} else if (subLoop == true) {
+
+			prevNodePtr->B = currentNode;
+			prevNodePtr = currentNode;
+			subLoop = false;
+
 		} else {
 
 			prevNodePtr->next = currentNode;
 			prevNodePtr = currentNode;
+
+		}
+
+		if (retNodeCheck) {
+
+			retNodeCheck = false;
+			addRetNode(currentNode);
+
+			subLoop = true;
+
+		}
+
+		if (statementEnd) {
+
+			statementEnd = false;
+
+			retNodeActive = true;
 
 		}
 
@@ -204,35 +269,23 @@ M_Node* ASTGenerator(Token* tknArr) {
 	M_Node* fileEnd = malloc(sizeof(M_Node));
 	fileEnd->type = FILE_END;
 
-	// Generates the end of the file. This M_Node will be used during inference to determine if the end of the file has been reached. 
+	if (retNodeCounter > 0) {
 
-	if (prevNodePtr) {
-
-		prevNodePtr->next = fileEnd;
-
-		printf("End of file generated...\n");
-		printf("Final M_Node is of type %s\n", TokenTypeCast[prevNodePtr->type]);
-
-	} else {
-
-		printf("End of file expected");
-
+		prevNodePtr = retNodes[retNodeCounter - 1];
+		
 	}
 
-	M_Node* focusNode = rootNode;
+	prevNodePtr->next = fileEnd;
 
-	printf("\nOperations as they are linked:\n\n");
+	M_Node* focusNode = rootNode;
 	
 	while (focusNode->type != FILE_END) {
 
-		printf("%s ", TokenTypeCast[focusNode->type]);
-		printf("The next M_Node is: \n");
+		printf("%s\n", TokenTypeCast[focusNode->type]);
 
 		focusNode = focusNode->next;
 
 	}
-
-
 }
 
 	

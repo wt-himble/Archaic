@@ -13,6 +13,7 @@ bool retNodeCheck = false;
 bool subLoop = false;
 bool statementEnd = false;
 bool retNodeActive = false;
+bool fileEnd = false;
 
 M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
@@ -36,9 +37,10 @@ M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
 }
 
-void addRetNode(M_Node* currentNodePtr) {
+void AddRetNode(M_Node* currentNodePtr) {
 
 	retNodeCounter++;
+	//printf("Added return node. Number of return nodes is now: %d\n", retNodeCounter);
 
 	M_Node** tempRetNodeArray = realloc(retNodes, sizeof(M_Node*) * retNodeCounter);
 
@@ -60,7 +62,7 @@ M_Node* ASTGenerator(Token* tknArr) {
 	M_Node* rootNode = NULL;
 	M_Node* prevNodePtr = NULL;
 
-	while (tknArr[idx].type != FILE_END) {
+	while (true) {
 
 		M_Node* currentNode = malloc(sizeof(M_Node));
 
@@ -215,13 +217,26 @@ M_Node* ASTGenerator(Token* tknArr) {
 
 		} break;
 
+		case FILE_END:
+
+		{
+			currentNode->type = FILE_END;
+			currentNode->dataPtr = tknArr[idx].dataPtr;
+
+			fileEnd = true;
+		}
+
 		}
 
 		if (retNodeActive) {
 
 			prevNodePtr = retNodes[retNodeCounter - 1];
 
+			//printf("Return node activated. Returning to node of type %s\n", TokenTypeCast[prevNodePtr->type]);
+
 			retNodeCounter--;
+
+			//printf("Removed return node. Number of return nodes is now %d\n", retNodeCounter);
 
 			retNodeActive = false;
 
@@ -248,7 +263,7 @@ M_Node* ASTGenerator(Token* tknArr) {
 		if (retNodeCheck) {
 
 			retNodeCheck = false;
-			addRetNode(currentNode);
+			AddRetNode(currentNode);
 
 			subLoop = true;
 
@@ -262,30 +277,19 @@ M_Node* ASTGenerator(Token* tknArr) {
 
 		}
 
-		idx++;
+		if (fileEnd) {
 
+			break;
+
+
+		} else {
+
+			idx++;
+
+		}
 	}
 
-	M_Node* fileEnd = malloc(sizeof(M_Node));
-	fileEnd->type = FILE_END;
-
-	if (retNodeCounter > 0) {
-
-		prevNodePtr = retNodes[retNodeCounter - 1];
-		
-	}
-
-	prevNodePtr->next = fileEnd;
-
-	M_Node* focusNode = rootNode;
-	
-	while (focusNode->type != FILE_END) {
-
-		printf("%s\n", TokenTypeCast[focusNode->type]);
-
-		focusNode = focusNode->next;
-
-	}
+	return rootNode;
 }
 
 	

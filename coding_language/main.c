@@ -4,6 +4,7 @@
 #include "globals.h"
 #include "lexer.h"
 #include "parser.h"
+#include "interpreter.h"
 
 int main() {
 
@@ -42,20 +43,12 @@ int main() {
 
 	} 
 
-	// ********** Creating tokens ********** //
+	// ********** Interpreter ********** //
 
 	Token* tokenArray = NULL;
 
 	tokenGenerator(srcBuffer, &tokenArray);
-	ASTGenerator(tokenArray);
-
-	int idx = 0;
-
-	/*while (tokenArray[idx].type != FILE_END) {
-
-		printf("type: %s || data: %s \n", TokenTypeCast[tokenArray[idx].type], tokenArray[idx].dataPtr);
-		idx++;
-
-	}*/
-
+	M_Node* rootNode = ASTGenerator(tokenArray);
+	RunAST(rootNode);
+	
 }

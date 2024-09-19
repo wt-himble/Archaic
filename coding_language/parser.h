@@ -15,6 +15,5 @@ typedef struct node_struct{
 } M_Node;
 
 M_Node* ASTGenerator(Token* tknArr);
-M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB);
 
 #endif

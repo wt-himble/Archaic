@@ -1,8 +1,11 @@
 Forge anew a variable known as VARIABLE
 Let VARIABLE be ascribed the value of 5
 
-Whilst VARIABLE is of abundant value compared to 1
-Exclaim unto the world "This while loop is working"
-Rend 1 from VARIABLE
+Whilst VARIABLE is of meager value compared to 10
+Should VARIABLE be of meager value compared to 7
+Exclaim unto the world "Less than 7"
+Thus concludes this statement
+Exclaim unto the world VARIABLE
+Embolden VARIABLE with 1
 Thus concludes this statement
 

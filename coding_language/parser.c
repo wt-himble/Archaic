@@ -15,6 +15,9 @@ bool statementEnd = false;
 bool retNodeActive = false;
 bool fileEnd = false;
 
+// Since WHILE loops and IF ELSE loops used conditional 
+// sub trees, a function was created to make the process easier
+
 M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
 	M_Node* Op = malloc(sizeof(M_Node));
@@ -37,10 +40,11 @@ M_Node* CondSubTreeGenerator(Token TokOp, Token TokA, Token TokB) {
 
 }
 
+// AddRetNode adds a return node to the heap of return nodes
+
 void AddRetNode(M_Node* currentNodePtr) {
 
 	retNodeCounter++;
-	//printf("Added return node. Number of return nodes is now: %d\n", retNodeCounter);
 
 	M_Node** tempRetNodeArray = realloc(retNodes, sizeof(M_Node*) * retNodeCounter);
 
@@ -56,6 +60,9 @@ void AddRetNode(M_Node* currentNodePtr) {
 	retNodes = tempRetNodeArray;
 
 }
+
+// The main function for generating the AST
+// Returns a pointer to the root node
 
 M_Node* ASTGenerator(Token* tknArr) {
 
@@ -232,15 +239,14 @@ M_Node* ASTGenerator(Token* tknArr) {
 
 			prevNodePtr = retNodes[retNodeCounter - 1];
 
-			//printf("Return node activated. Returning to node of type %s\n", TokenTypeCast[prevNodePtr->type]);
-
 			retNodeCounter--;
-
-			//printf("Removed return node. Number of return nodes is now %d\n", retNodeCounter);
 
 			retNodeActive = false;
 
 		}
+
+		// ASTGenerator behaves like a state machine. Certain cases will affect the
+		// branching of the nodes.
 
 		if (rootNode == NULL) {
 

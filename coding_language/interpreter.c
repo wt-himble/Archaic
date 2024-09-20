@@ -9,6 +9,8 @@ varData** variables = NULL;
 int variableCounter = 0;
 bool subLoopActive = false;
 bool returnNodeActive = false;
+bool ifElseLoop = false;
+bool ifFailed = false;
 
 M_Node** returnNodeArray = NULL;
 int returnNodeCounter = 0;
@@ -34,7 +36,6 @@ varData* GetVariableData(char* varName) {
 void AddReturnNode(M_Node* currentNodePtr) {
 
 	returnNodeCounter++;
-	//printf("Added return node. Number of return nodes is now: %d\n", retNodeCounter);
 
 	M_Node** tempRetNodeArray = realloc(returnNodeArray, sizeof(M_Node*) * returnNodeCounter);
 
@@ -178,10 +179,94 @@ void RunAST(M_Node* rootNode) {
 
 		case IF:  
 		{
+			TokenType condType = focusNode->A->type;
 
+			M_Node* A = focusNode->A->A;
+			M_Node* B = focusNode->A->B;
 
+			float ValA, ValB;
 
+			if (A->type == VAR_REF) {
+
+				varData* varData = GetVariableData(A->dataPtr);
+
+				ValA = atof(varData->data);
+
+			} else {
+
+				ValA = atof(focusNode->A->A->dataPtr);
+
+			}
+
+			if (B->type == VAR_REF) {
+
+				varData* varData = GetVariableData(B->dataPtr);
+
+				ValB = atof(varData->data);
+
+			} else {
+
+				ValB = atof(focusNode->A->B->dataPtr);
+
+			}
+
+			switch (condType) {
+
+			case LESS_THAN:
+
+				if (ValA < ValB) {
+
+					subLoopActive = true;
+					ifElseLoop = true;
+					AddReturnNode(focusNode);
+
+				} break;
+
+			case GREATER_THAN:
+
+				if (ValA > ValB) {
+
+					subLoopActive = true;
+					ifElseLoop = true;
+					AddReturnNode(focusNode);
+
+				} break;
+
+			case EQUAL_TO:
+
+				if (ValA == ValB) {
+
+					subLoopActive = true;
+					ifElseLoop = true;
+					AddReturnNode(focusNode);
+
+				} break;
+
+			case UNEQUAL_TO:
+
+				if (ValA != ValB) {
+
+					subLoopActive = true;
+					ifElseLoop = true;
+					AddReturnNode(focusNode);
+
+				} break;
+			}
+		
 		} break;
+
+		case ELSE:
+		{
+			if (ifFailed) {
+
+				subLoopActive = true;
+				ifElseLoop = true;
+				AddReturnNode(focusNode);
+
+				ifFailed = false;
+
+			}
+		}
 
 		case STATEMENT_END:
 		{
@@ -241,6 +326,42 @@ void RunAST(M_Node* rootNode) {
 
 		} break;
 
+		case ADD:
+		{
+			float ValA, ValB;
+
+			if (focusNode->B->type == VAR_REF) {
+
+				varData* varData = GetVariableData(focusNode->B->dataPtr);
+
+				ValB = atof(varData->data);
+
+
+			} else {
+
+				ValB = atof(focusNode->B->dataPtr);
+
+			}
+
+			for (int i = 0; i < variableCounter; i++) {
+
+				if (strcmp(focusNode->A->dataPtr, variables[i]->name) == 0) {
+
+					ValA = atof(variables[i]->data);
+
+					float difference = ValB + ValA;
+
+					char* updatedData = malloc(sizeof(char) * 32);
+
+					sprintf(updatedData, "%f", difference);
+
+					variables[i]->data = updatedData;
+
+				}
+			}
+
+		} break;
+
 		}
 
 		if (subLoopActive) {
@@ -248,13 +369,20 @@ void RunAST(M_Node* rootNode) {
 			focusNode = focusNode->B;
 			subLoopActive = false;
 
-		} else if (returnNodeActive == true) {
+		} else if (returnNodeActive == true && !ifElseLoop) {
 
 			focusNode = returnNodeArray[returnNodeCounter - 1];
 			returnNodeActive = false;
 
 			returnNodeCounter--;
 
+		} else if (returnNodeActive && ifElseLoop) {
+
+			focusNode = returnNodeArray[returnNodeCounter - 1]->next;
+			returnNodeActive = false;
+			ifElseLoop = false;
+
+			returnNodeCounter--;
 
 		} else {
 

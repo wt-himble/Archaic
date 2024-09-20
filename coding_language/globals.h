@@ -1,6 +1,11 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+// ********** Globals ********** //
+
+// This header file is shared between all the other subfiles of the interpreter
+// It's mainly used for the type system for nodes and tokens generated during the AST development
+
 typedef enum {
 
 	VAR_DEC,			// 0
@@ -25,6 +30,9 @@ typedef enum {
 
 } TokenType;
 
+// TokenTypeCast is an array used to print a string representation of the 
+// types. It makes debugging much easier.
+
 static char const* TokenTypeCast[] = {
 	
 	"VAR_DEC      ",
@@ -47,6 +55,9 @@ static char const* TokenTypeCast[] = {
 	"ADD          ",
 	"SUBTRACT     "
 };
+
+// Token is the structure used during the lexical analysis of the source code
+// It contains the type of the token and a pointer to a string containing the relevent data
 
 typedef struct {
 

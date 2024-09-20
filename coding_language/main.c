@@ -6,6 +6,19 @@
 #include "parser.h"
 #include "interpreter.h"
 
+// ********** NOTES FROM THE AUTHOR ********** //
+// Welcome to Archaic, an interpreted language I developped!
+// 
+// Who am I? My name is wt-himble, a computer engineering student based
+// out of Queen's University Canada.
+//
+// Archaic is meant to be a simple esoteric language, with syntax
+// that reads like medieval prose. It is dynamically typed, meaning
+// variables do not need to have their types declared prior to runtime.
+// 
+// P.S. I have yet to do any robust testing, so it's possible 
+// some code may not work :)
+
 int main() {
 
 	// ********** Getting data from source file ********** //
@@ -43,7 +56,7 @@ int main() {
 
 	} 
 
-	// ********** Interpreter ********** //
+	// ********** Putting it all together ********** //
 
 	Token* tokenArray = NULL;
 

@@ -9,6 +9,9 @@ int tknCounterPrime = 0;
 
 char* arbPtr = "arbit";
 
+// addToken is self explanatory. It's used to add a token to the 
+// overall array of tokens generated during the lexical analysis.
+
 void addToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn) {
 
 	int endToken = 0;
@@ -39,6 +42,10 @@ void addToken(Token** tknArrPtr, TokenType typeIn, char* dataPtrIn) {
 	*tknArrPtr = tempArr;
 
 }
+
+// varDecCheck is used to check if a variable declaration has been made.
+// This description is relevant for all the CHECK functions going forward, 
+// as they all do the same thing.
 
 bool varDecCheck(char** tempTknArr, int* iptr) {
 
@@ -129,6 +136,10 @@ bool endStatementCheck(char** tempTknArr, int* iptr) {
 
 	}
 }
+
+// equalityStatementCheck is used to check which equality statement
+// is being used. The INVALID datatype is here for housekeeping, 
+// in the case that the incorrect keyword is in the source code.
 
 TokenType equalityStatementCheck(char** tempTknArr, int* iptr) {
 
@@ -222,6 +233,12 @@ bool containsLetter(char* str) {
 		}
 	}
 }
+
+// Allows for the language to be dynamically typed
+// Checks for characters in the string as well as quotes to 
+// signify a type as a string.
+// If the value is neither a string nor a number then it is
+// assumed to be a variable reference.
 
 TokenType valueChecker(char** tempTknArr, int* iptr) {
 

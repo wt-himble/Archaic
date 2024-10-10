@@ -7,7 +7,7 @@
 #include "interpreter.h"
 
 // ********** NOTES FROM THE AUTHOR ********** //
-// Welcome to Archaic, an interpreted language I developped!
+// Welcome to Archaic, an interpreted language I developed!
 // 
 // Who am I? My name is wt-himble, a computer engineering student based
 // out of Queen's University Canada.
